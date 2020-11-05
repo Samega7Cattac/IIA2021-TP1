@@ -47,12 +47,25 @@ to go
   if count mice = 0 [stop]
 end
 
-
+to-report detect-cats
+  foreach [1 2 3 4]
+  [
+    rt 90
+    if any? cats-on patches in-cone 5 90
+    [
+      rt 180
+      print "go it"
+      report true
+    ]
+  ]
+  report false
+end
 
 to move-mice
   ask mice[
-    let x one-of neighbors
-    move-to x
+    let x detect-cats
+    if random 100 < 15 [rt one-of [90 60 -90 -60]]
+    move-to patch-ahead 1
   ]
 end
 
@@ -114,7 +127,7 @@ N-mice
 N-mice
 0
 20
-12.0
+10.0
 1
 1
 NIL
