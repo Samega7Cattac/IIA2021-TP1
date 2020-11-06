@@ -54,7 +54,6 @@ to-report detect-cats
     if any? cats-on patches in-cone 5 90
     [
       rt 180
-      print "go it"
       report true
     ]
   ]
