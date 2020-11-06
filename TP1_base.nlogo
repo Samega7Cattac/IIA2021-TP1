@@ -63,24 +63,28 @@ end
 to move-mice
   ask mice[
     let x detect-cats
-    if random 100 < 15 [rt one-of [90 60 -90 -60]]
+    if random 100 < 25 [rt one-of [90 60 -90 -60]]
     move-to patch-ahead 1
   ]
 end
 
+to-report detect-mouse
+  rt 90
+  if any? mice-on patches in-cone 3 90 [report true]
+  rt 180
+  if any? mice-on patches in-cone 3 90 [report true]
+  rt 90
+  report false
+end
+
 to move-cats
   ask cats[
-    if  patch-ahead 1 != nobody [set a patch-ahead 1]
-    if patch-ahead 2 != nobody [set b patch-ahead 2]
-    if patch-right-and-ahead 90 1 != nobody [set c patch-right-and-ahead 90 1]
-    if patch-right-and-ahead -90 1 != nobody [set d patch-right-and-ahead -90 1]
-    if patch-right-and-ahead 45 1 != nobody [set w patch-right-and-ahead 45 1]
-    if patch-right-and-ahead -45 1 != nobody [set z patch-right-and-ahead -45 1]
-    let y (patch-set a b c d w z)
-    let x one-of y
-    move-to x
-    if random 100 < 25
-    [set heading one-of [0 90 180 270]]
+    (ifelse any? mice-on patches in-cone 7 30 [move-to patch-ahead 2]
+    detect-mouse [move-to patch-ahead 1]
+    [
+      if random 100 < 15 [rt one-of [90 60 -90 -60]]
+      move-to patch-ahead 1
+    ])
   ]
 end
 
