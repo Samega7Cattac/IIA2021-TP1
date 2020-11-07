@@ -45,11 +45,17 @@ to setup-agents
 end
 
 to go
-  move-mice
-  move-cats
-  lunch-time
+  go-mice
+  go-cats
   tick
-  if count mice = 0 [stop]
+  if count mice = 0 or count cats = 0 [stop]
+end
+
+to go-mice
+  ask mice
+  [
+    move-mice
+  ]
 end
 
 to-report detect-cats
@@ -66,11 +72,11 @@ to-report detect-cats
 end
 
 to move-mice
-  ask mice[
-    let x detect-cats
-    if random 100 < 25 [rt one-of [90 60 -90 -60]]
-    move-to patch-ahead 1
-  ]
+  let x detect-cats
+  if random 100 < 25 [rt one-of [90 60 -90 -60]]
+  move-to patch-ahead 1
+  set energy energy - 1
+  ;if energy < 0 [die]
 end
 
 to-report detect-mouse
@@ -82,20 +88,45 @@ to-report detect-mouse
   report false
 end
 
-to move-cats
-  ask cats[
-    (ifelse any? mice-on patches in-cone 7 30 [move-to patch-ahead 2]
-    detect-mouse [move-to patch-ahead 1]
+to-report move-to-mouse
+  (ifelse any? mice-on patches in-cone 7 30
+  [
+    move-to patch-ahead 2
+    report true
+  ]
+  detect-mouse
+  [
+    move-to patch-ahead 1
+    report true
+  ]
+  [report false])
+end
+
+to go-cats
+  ask cats
+  [
+    ifelse energy < cat_max_energy
     [
-      if random 100 < 15 [rt one-of [90 60 -90 -60]]
-      move-to patch-ahead 1
-    ])
+      if not move-to-mouse [move-cat]
+      eat-mouse
+    ]
+    [move-cat]
+    set energy energy - 1
+    if energy < 0 [die]
   ]
 end
 
-to lunch-time
-  ask cats[
-    if any? mice-on patches in-cone 1 180 [ask one-of mice-on patches in-cone 1 180 [die]]
+to move-cat
+  if random 100 < 15 [rt one-of [90 60 -90 -60]]
+  move-to patch-ahead 1
+end
+
+to eat-mouse
+  if any? mice-on patches in-cone 1 180
+  [
+    ask one-of mice-on patches in-cone 1 180 [die]
+    ifelse energy + cat_gain_energy > cat_max_energy [set energy cat_max_energy]
+    [set energy energy + cat_gain_energy]
   ]
 end
 @#$#@#$#@
@@ -150,7 +181,7 @@ N-cats
 N-cats
 0
 10
-5.0
+1.0
 1
 1
 NIL
@@ -211,6 +242,36 @@ nenergy
 0
 100
 50.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+687
+77
+859
+110
+cat_max_energy
+cat_max_energy
+0
+100
+50.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+881
+78
+1055
+111
+cat_gain_energy
+cat_gain_energy
+0
+cat_max_energy
+10.0
 1
 1
 NIL
