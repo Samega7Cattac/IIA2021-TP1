@@ -1,4 +1,4 @@
-globals[gvar NCATS NMICE] ; gvar foi so para ter um exemplo de variavel global k n é um controlo
+globals[gvar] ; gvar foi so para ter um exemplo de variavel global k n é um controlo
 breed[cats cat]
 breed[mice mouse]
 turtles-own [energy]
@@ -38,7 +38,6 @@ to setup-agents
     [set infected false]
     set energy nenergy * 2
   ]
-  set NMICE N-mice
   create-cats N-cats
   [
     set shape "cat"
@@ -49,11 +48,10 @@ to setup-agents
     set energy nenergy
     set death-infected false
   ]
-  set NCATS N-cats
 end
 
 to go
-  if random 100 < 15 [ask one-of patches with [not any? mice-here or not any? cats-here][set pcolor blue]]
+  if random 100 < 25 [ask one-of patches with [not any? mice-here or not any? cats-here][set pcolor blue]]
   go-mice
   go-cats
   tick
@@ -67,11 +65,7 @@ to go-mice
     eat-food
     little-mice
     set energy energy - energy_per_tick
-    if energy < 0
-    [
-      set NMICE NMICE - 1
-      die
-    ]
+    if energy < 0 [die]
   ]
 end
 
@@ -79,12 +73,7 @@ to little-mice
   let x count mice-on patches in-radius 2
   if x > 2 and x < 5
   [
-    if random 100 < pbreed
-    [
-      let y random 2
-      hatch-mice y
-      set NMICE NMICE + y
-    ]
+    if random 100 < pbreed [hatch-mice random 2]
   ]
 end
 
@@ -104,7 +93,7 @@ end
 to-report detect-cats
   foreach [1 2 3 4]
   [
-    if any? cats-on patches in-cone 10 90
+    if any? cats-on patches in-cone 5 90
     [
       rt 180
       report true
@@ -141,7 +130,7 @@ to-report detect-mouse
 end
 
 to-report move-to-mouse
-  (ifelse any? mice-on patches in-cone 5 90
+  (ifelse any? mice-on patches in-cone 7 30
   [
     move-to patch-ahead 2
     report true
@@ -176,7 +165,6 @@ end
 to die-cat
   ifelse death-infected [ask patch-here [set pcolor red]]
   [ask patch-here [set pcolor blue]]
-  set NCATS NCATS - 1
   die
 end
 
@@ -193,7 +181,6 @@ to eat-mouse
     if death-infected [die-cat]
     ifelse energy + gain_energy > max_energy [set energy max_energy]
     [set energy energy + gain_energy]
-    set NMICE NMICE - 1
   ]
 end
 @#$#@#$#@
@@ -338,7 +325,7 @@ gain_energy
 gain_energy
 0
 max_energy
-5.0
+10.0
 1
 1
 NIL
@@ -380,7 +367,7 @@ MONITOR
 357
 508
 Numero de Ratos
-NMICE
+count mice
 0
 1
 11
@@ -391,7 +378,7 @@ MONITOR
 555
 508
 Numero de Gatos
-NCATS
+count cats
 0
 1
 11
