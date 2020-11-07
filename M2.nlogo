@@ -1,6 +1,7 @@
 breed[cats cat]
 breed[mice mouse]
-globals [a b c d w z]
+turtles-own [energy]
+mice-own [infected]
 
 to setup
   ca
@@ -27,6 +28,9 @@ to setup-agents
     set shape "mouse side"
     set color 4
     setxy random-pxcor random-pycor
+    ifelse random 100 < 10 [set infected true]
+    [set infected false]
+    set energy nenergy
   ]
 
   create-cats N-cats
@@ -36,6 +40,7 @@ to setup-agents
     let x one-of patches with [not any? mice-here and not any? mice-on neighbors and not any? cats-here]
     setxy [pxcor] of x [pycor] of x
     set heading one-of [0 90 180 270]
+    set energy nenergy
   ]
 end
 
@@ -89,8 +94,8 @@ to move-cats
 end
 
 to lunch-time
-  ask mice[
-    if any? cats-on neighbors [die]
+  ask cats[
+    if any? mice-on patches in-cone 1 180 [ask one-of mice-on patches in-cone 1 180 [die]]
   ]
 end
 @#$#@#$#@
@@ -195,6 +200,21 @@ ticks
 17
 1
 11
+
+SLIDER
+684
+22
+856
+55
+nenergy
+nenergy
+0
+100
+50.0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?

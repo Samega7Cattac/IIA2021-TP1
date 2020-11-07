@@ -89,8 +89,8 @@ to move-cats
 end
 
 to lunch-time
-  ask mice[
-    if any? cats-on neighbors [die]
+  ask cats[
+    if any? mice-on patches in-cone 1 180 [ask one-of mice-on patches in-cone 1 180 [die]]
   ]
 end
 @#$#@#$#@
