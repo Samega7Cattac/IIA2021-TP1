@@ -2,6 +2,7 @@ breed[cats cat]
 breed[mice mouse]
 turtles-own [energy]
 mice-own [infected]
+cats-own [dead infected]
 
 to setup
   ca
@@ -55,6 +56,8 @@ to go-mice
   ask mice
   [
     move-mice
+    ;set energy energy - 1
+    ;if energy < 0 [die]
   ]
 end
 
@@ -75,8 +78,6 @@ to move-mice
   let x detect-cats
   if random 100 < 25 [rt one-of [90 60 -90 -60]]
   move-to patch-ahead 1
-  set energy energy - 1
-  ;if energy < 0 [die]
 end
 
 to-report detect-mouse
