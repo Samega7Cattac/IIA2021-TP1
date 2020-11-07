@@ -1,8 +1,9 @@
+globals[gvar]
 breed[cats cat]
 breed[mice mouse]
 turtles-own [energy]
 mice-own [infected]
-cats-own [dead infected]
+cats-own [death-infected]
 
 to setup
   ca
@@ -13,14 +14,18 @@ end
 
 to setup-patches
   ask patches[
-    let x 28
-    let y 48
-    if pycor mod 2 = 0
-    [set x 48 set y 28]
-    ifelse pxcor mod 2 = 0
-    [set pcolor x]
-    [set pcolor y]
+    set-patch-default
   ]
+end
+
+to set-patch-default
+  let x 28
+  let y 48
+  if pycor mod 2 = 0
+  [set x 48 set y 28]
+  ifelse pxcor mod 2 = 0
+  [set pcolor x]
+  [set pcolor y]
 end
 
 to setup-agents
@@ -29,9 +34,9 @@ to setup-agents
     set shape "mouse side"
     set color 4
     setxy random-pxcor random-pycor
-    ifelse random 100 < 10 [set infected true]
+    ifelse random 100 < 15 [set infected true]
     [set infected false]
-    set energy nenergy
+    set energy nenergy * 2
   ]
 
   create-cats N-cats
@@ -42,10 +47,12 @@ to setup-agents
     setxy [pxcor] of x [pycor] of x
     set heading one-of [0 90 180 270]
     set energy nenergy
+    set death-infected false
   ]
 end
 
 to go
+  if random 100 < 15 [ask one-of patches with [not any? mice-here or not any? cats-here][set pcolor blue]]
   go-mice
   go-cats
   tick
@@ -56,35 +63,68 @@ to go-mice
   ask mice
   [
     move-mice
-    ;set energy energy - 1
-    ;if energy < 0 [die]
+    eat-food
+    little-mice
+    set energy energy - energy_per_tick
+    if energy < 0 [die]
   ]
+end
+
+to little-mice
+  if count mice-on patches in-radius 2 < 2
+  [
+    if random 100 < pbreed [hatch-mice random 3]
+  ]
+end
+
+to eat-food
+  (ifelse any? patches in-cone 1 180 with [pcolor = red]
+  [
+    set energy energy + energy / 2
+    ask one-of patches in-cone 1 180 with [pcolor = red] [set-patch-default]
+  ]
+  any? patches in-cone 1 180 with [pcolor = blue]
+  [
+    set energy energy + gain_energy
+    ask one-of patches in-cone 1 180 with [pcolor = blue] [set-patch-default]
+  ])
 end
 
 to-report detect-cats
   foreach [1 2 3 4]
   [
-    rt 90
-    if any? cats-on patches in-cone 5 90
+    if any? cats-on patches in-cone 10 90
     [
       rt 180
       report true
     ]
+    rt 90
+  ]
+  report false
+end
+
+to-report detect-food
+  foreach [1 2 3 4]
+  [
+    (ifelse any? patches in-cone 5 90 with [pcolor = red] [report true]
+    any? patches in-cone 5 90 with [pcolor = blue] [report true])
+    rt 90
   ]
   report false
 end
 
 to move-mice
-  let x detect-cats
-  if random 100 < 25 [rt one-of [90 60 -90 -60]]
+  let food false
+  if not detect-cats [set food detect-food]
+  if not food and random 100 < 25 [rt one-of [90 60 -90 -60]]
   move-to patch-ahead 1
 end
 
 to-report detect-mouse
   rt 90
-  if any? mice-on patches in-cone 3 90 [report true]
+  if any? mice-on patches in-cone 5 150 [report true]
   rt 180
-  if any? mice-on patches in-cone 3 90 [report true]
+  if any? mice-on patches in-cone 5 150 [report true]
   rt 90
   report false
 end
@@ -106,14 +146,14 @@ end
 to go-cats
   ask cats
   [
-    ifelse energy < cat_max_energy
+    ifelse energy < max_energy
     [
       if not move-to-mouse [move-cat]
       eat-mouse
     ]
     [move-cat]
-    set energy energy - 1
-    if energy < 0 [die]
+    set energy energy - energy_per_tick
+    if energy < 0 [die-cat]
   ]
 end
 
@@ -122,12 +162,25 @@ to move-cat
   move-to patch-ahead 1
 end
 
+to die-cat
+  ifelse death-infected [ask patch-here [set pcolor red]]
+  [ask patch-here [set pcolor blue]]
+  die
+end
+
 to eat-mouse
   if any? mice-on patches in-cone 1 180
   [
-    ask one-of mice-on patches in-cone 1 180 [die]
-    ifelse energy + cat_gain_energy > cat_max_energy [set energy cat_max_energy]
-    [set energy energy + cat_gain_energy]
+    ask one-of mice-on patches in-cone 1 180
+    [
+      ifelse infected [set gvar true]
+      [set gvar false]
+      die
+    ]
+    set death-infected gvar
+    if death-infected [die-cat]
+    ifelse energy + gain_energy > max_energy [set energy max_energy]
+    [set energy energy + gain_energy]
   ]
 end
 @#$#@#$#@
@@ -182,7 +235,7 @@ N-cats
 N-cats
 0
 10
-1.0
+5.0
 1
 1
 NIL
@@ -253,11 +306,11 @@ SLIDER
 77
 859
 110
-cat_max_energy
-cat_max_energy
+max_energy
+max_energy
 0
 100
-50.0
+75.0
 1
 1
 NIL
@@ -268,11 +321,41 @@ SLIDER
 78
 1055
 111
-cat_gain_energy
-cat_gain_energy
+gain_energy
+gain_energy
 0
-cat_max_energy
-10.0
+max_energy
+5.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+881
+23
+1053
+56
+energy_per_tick
+energy_per_tick
+0
+nenergy / 10
+0.5
+0.5
+1
+NIL
+HORIZONTAL
+
+SLIDER
+692
+192
+864
+225
+pbreed
+pbreed
+0
+100
+5.0
 1
 1
 NIL
