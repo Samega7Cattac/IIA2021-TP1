@@ -1,4 +1,4 @@
-globals[gvar]
+globals[gvar NCATS NMICE] ; gvar foi so para ter um exemplo de variavel global k n é um controlo
 breed[cats cat]
 breed[mice mouse]
 turtles-own [energy]
@@ -34,11 +34,11 @@ to setup-agents
     set shape "mouse side"
     set color 4
     setxy random-pxcor random-pycor
-    ifelse random 100 < 15 [set infected true]
+    ifelse random 100 < pinfected [set infected true]
     [set infected false]
     set energy nenergy * 2
   ]
-
+  set NMICE N-mice
   create-cats N-cats
   [
     set shape "cat"
@@ -49,6 +49,7 @@ to setup-agents
     set energy nenergy
     set death-infected false
   ]
+  set NCATS N-cats
 end
 
 to go
@@ -66,14 +67,24 @@ to go-mice
     eat-food
     little-mice
     set energy energy - energy_per_tick
-    if energy < 0 [die]
+    if energy < 0
+    [
+      set NMICE NMICE - 1
+      die
+    ]
   ]
 end
 
 to little-mice
-  if count mice-on patches in-radius 2 < 2
+  let x count mice-on patches in-radius 2
+  if x > 2 and x < 5
   [
-    if random 100 < pbreed [hatch-mice random 3]
+    if random 100 < pbreed
+    [
+      let y random 2
+      hatch-mice y
+      set NMICE NMICE + y
+    ]
   ]
 end
 
@@ -122,15 +133,15 @@ end
 
 to-report detect-mouse
   rt 90
-  if any? mice-on patches in-cone 5 150 [report true]
+  if any? mice-on patches in-cone 3 90 [report true]
   rt 180
-  if any? mice-on patches in-cone 5 150 [report true]
+  if any? mice-on patches in-cone 3 90 [report true]
   rt 90
   report false
 end
 
 to-report move-to-mouse
-  (ifelse any? mice-on patches in-cone 7 30
+  (ifelse any? mice-on patches in-cone 5 90
   [
     move-to patch-ahead 2
     report true
@@ -165,6 +176,7 @@ end
 to die-cat
   ifelse death-infected [ask patch-here [set pcolor red]]
   [ask patch-here [set pcolor blue]]
+  set NCATS NCATS - 1
   die
 end
 
@@ -181,6 +193,7 @@ to eat-mouse
     if death-infected [die-cat]
     ifelse energy + gain_energy > max_energy [set energy max_energy]
     [set energy energy + gain_energy]
+    set NMICE NMICE - 1
   ]
 end
 @#$#@#$#@
@@ -355,7 +368,44 @@ pbreed
 pbreed
 0
 100
-5.0
+15.0
+1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+230
+463
+357
+508
+Numero de Ratos
+NMICE
+0
+1
+11
+
+MONITOR
+426
+463
+555
+508
+Numero de Gatos
+NCATS
+0
+1
+11
+
+SLIDER
+692
+250
+864
+283
+pinfected
+pinfected
+0
+100
+15.0
 1
 1
 NIL
