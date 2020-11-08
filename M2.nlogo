@@ -116,7 +116,7 @@ end
 to move-mice
   let food false
   if not detect-cats [set food detect-food]
-  if not food and random 100 < 25 [rt one-of [90 60 -90 -60]]
+  if not food and random 100 < pturn [rt one-of [90 60 -90 -60]]
   move-to patch-ahead 1
 end
 
@@ -158,7 +158,7 @@ to go-cats
 end
 
 to move-cat
-  if random 100 < 15 [rt one-of [90 60 -90 -60]]
+  if random 100 < pturn [rt one-of [90 60 -90 -60]]
   move-to patch-ahead 1
 end
 
@@ -220,7 +220,7 @@ N-mice
 N-mice
 0
 20
-10.0
+20.0
 1
 1
 NIL
@@ -325,7 +325,7 @@ gain_energy
 gain_energy
 0
 max_energy
-10.0
+15.0
 1
 1
 NIL
@@ -347,10 +347,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-692
-192
-864
-225
+689
+190
+861
+223
 pbreed
 pbreed
 0
@@ -384,10 +384,10 @@ count cats
 11
 
 SLIDER
-692
-250
-864
-283
+690
+242
+862
+275
 pinfected
 pinfected
 0
@@ -397,6 +397,40 @@ pinfected
 1
 NIL
 HORIZONTAL
+
+SLIDER
+688
+137
+860
+170
+pturn
+pturn
+0
+100
+25.0
+1
+1
+NIL
+HORIZONTAL
+
+PLOT
+701
+318
+1194
+484
+Numero de Ratos
+tick
+N
+0.0
+0.0
+0.0
+0.0
+true
+true
+"" ""
+PENS
+"N Ratos" 1.0 0 -16777216 true "" "plot count mice"
+"N Gatos" 1.0 0 -7500403 true "" "plot count cats"
 
 @#$#@#$#@
 ## WHAT IS IT?
