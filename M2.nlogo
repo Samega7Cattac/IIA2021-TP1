@@ -235,7 +235,7 @@ N-cats
 N-cats
 0
 10
-5.0
+10.0
 1
 1
 NIL
@@ -818,6 +818,107 @@ NetLogo 6.1.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="5vs10" repetitions="30" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>count cats</metric>
+    <metric>count mice</metric>
+    <enumeratedValueSet variable="pbreed">
+      <value value="15"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="max_energy">
+      <value value="75"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gain_energy">
+      <value value="15"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nenergy">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pturn">
+      <value value="25"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="N-cats">
+      <value value="5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pinfected">
+      <value value="15"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="N-mice">
+      <value value="10"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="energy_per_tick">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="1vs20" repetitions="30" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>count cats</metric>
+    <metric>count mice</metric>
+    <enumeratedValueSet variable="pbreed">
+      <value value="15"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="max_energy">
+      <value value="75"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gain_energy">
+      <value value="15"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nenergy">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pturn">
+      <value value="25"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="N-cats">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pinfected">
+      <value value="15"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="N-mice">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="energy_per_tick">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="10vs20" repetitions="30" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>count cats</metric>
+    <metric>count mice</metric>
+    <enumeratedValueSet variable="pbreed">
+      <value value="15"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="max_energy">
+      <value value="75"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gain_energy">
+      <value value="15"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nenergy">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pturn">
+      <value value="25"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="N-cats">
+      <value value="10"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pinfected">
+      <value value="15"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="N-mice">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="energy_per_tick">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
